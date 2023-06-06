@@ -1,13 +1,3 @@
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(
-  'ble2xtmr8gvrxnrxo3ic',
-  'uljyctctqboxq1jl',
-  'QGb3q5Nx9NvDDXeIYIO2',
-  {
-    host: 'ble2xtmr8gvrxnrxo3ic-mysql.services.clever-cloud.com',
-    dialect: 'mysql'
-  }
-);
 
 
 const { DataTypes } = require('sequelize');
