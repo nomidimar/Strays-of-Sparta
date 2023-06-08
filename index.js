@@ -9,12 +9,18 @@ app.use(bodyParser.json({limit: '1mb'}));
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
-  'ble2xtmr8gvrxnrxo3ic',
-  'uljyctctqboxq1jl',
-  'QGb3q5Nx9NvDDXeIYIO2',
+  'heroku_b4fa5be34290880', // Database name
+  'bd1c5039f875a7', // Username
+  'd233708a', // Password
   {
-    host: 'ble2xtmr8gvrxnrxo3ic-mysql.services.clever-cloud.com',
-    dialect: 'mysql'
+    host: 'eu-cdbr-west-03.cleardb.net',
+    dialect: 'mysql',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // For self-signed certificates
+      },
+    },
   }
 );
 
