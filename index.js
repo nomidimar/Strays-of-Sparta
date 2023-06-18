@@ -1,5 +1,8 @@
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
+app.use(cors());
 
 const bodyParser = require('body-parser');
 
@@ -8,21 +11,10 @@ app.use(bodyParser.json({limit: '1mb'}));
 
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize(
-  'heroku_b4fa5be34290880', // Database name
-  'bd1c5039f875a7', // Username
-  'd233708a', // Password
-  {
-    host: 'eu-cdbr-west-03.cleardb.net',
-    dialect: 'mysql',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // For self-signed certificates
-      },
-    },
-  }
-);
+const sequelize = new Sequelize('pet_match', 'root', 'password', {
+  host: 'localhost',
+  dialect: 'mysql'
+});
 
 const { DataTypes } = require('sequelize');
 
@@ -189,6 +181,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.listen(8080, () => {
+app.listen(3000, () => {
   console.log('Server listening on port 3000');
 });
