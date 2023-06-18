@@ -40,7 +40,7 @@ class AppDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.account_balance),
+                  leading: Icon(Icons.monetization_on),
                   title: Text('Δωρεές'),
                   onTap: () {
                     // Handle navigation to the donations screen

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/dog_ad.dart';
 import '../components/sidenav.dart';
+import 'dart:convert';
+import '../screens/dog_details_screen.dart';
 
 class AdoptionsList extends StatefulWidget {
   @override
@@ -35,26 +37,32 @@ class _AdoptionsListState extends State<AdoptionsList> {
 
   List<DogAd> dogAds = [
     DogAd(
-      pictureUrl: 'assets/images/dogs.jpg',
+      pictureUrl: 'assets/images/images (1).jpg',
       name: 'Buddy',
       gender: 'Male',
       age: 2,
       size: 'Medium',
     ),
     DogAd(
-      pictureUrl: 'assets/images/dogs.jpg',
-      name: 'Buddy',
-      gender: 'Male',
-      age: 2,
+      pictureUrl: 'assets/images/photo-1615751072497-5f5169febe17.jpg',
+      name: 'Jesse',
+      gender: 'Female',
+      age: 5,
       size: 'Medium',
     ),
     DogAd(
-      pictureUrl: 'assets/images/dogs.jpg',
-      name: 'Buddy',
+      pictureUrl: 'assets/images/042822_AG_dog-breeds_feats-1030x580.jpg',
+      name: 'Jack',
       gender: 'Male',
-      age: 2,
+      age: 1,
       size: 'Medium',
     ),
+  ];
+
+  List<String> pictureUrls = [
+    'assets/images/dogs.jpg',
+    'assets/images/dogs_background.jpg',
+    'assets/images/images.jpg'
   ];
 
   @override
@@ -70,41 +78,54 @@ class _AdoptionsListState extends State<AdoptionsList> {
           // Get the dog ad at the current index
           DogAd dogAd = dogAds[index];
 
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 120, // Adjust the width as needed
-                  height: 120, // Adjust the height as needed
-                  margin: EdgeInsets.only(
-                      right: 16.0), // Adjust the spacing as needed
-                  child: Image.network(
-                    dogAd.pictureUrl,
-                    fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DogDetailsScreen(
+                    imageUrls: pictureUrls,
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        dogAd.name,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 120, // Adjust the width as needed
+                    height: 120, // Adjust the height as needed
+                    margin: EdgeInsets.only(
+                        right: 16.0,
+                        left: 10.0), // Adjust the spacing as needed
+                    child: Image.network(
+                      dogAd.pictureUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dogAd.name,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Gender: ${dogAd.gender}, Age: ${dogAd.age}, Size: ${dogAd.size}',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Gender: ${dogAd.gender}, Age: ${dogAd.age}, Size: ${dogAd.size}',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
