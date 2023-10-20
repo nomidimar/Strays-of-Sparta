@@ -39,7 +39,7 @@ class AppDrawer extends StatelessWidget {
                   leading: Icon(Icons.directions_car),
                   title: Text('Μεταφορές'),
                   onTap: () {
-                    // Handle navigation to the transportation screen
+                    Navigator.pushNamed(context, '/transport');
                   },
                 ),
                 ListTile(
@@ -60,7 +60,7 @@ class AppDrawer extends StatelessWidget {
                   leading: Icon(Icons.contact_mail_rounded),
                   title: Text('Επικοινωνία'),
                   onTap: () {
-                    // Handle navigation to the donations screen
+                    Navigator.pushNamed(context, '/contact');
                   },
                 ),
               ],
