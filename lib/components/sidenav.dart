@@ -4,6 +4,9 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+        child: Container(
+      color: Color.fromARGB(
+          255, 247, 246, 246), // Set the background color to gray
       child: Column(
         children: [
           Expanded(
@@ -20,7 +23,7 @@ class AppDrawer extends StatelessWidget {
                   child: Text(
                     '',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: const Color.fromARGB(255, 240, 229, 229),
                       fontSize: 24,
                     ),
                   ),
@@ -29,7 +32,7 @@ class AppDrawer extends StatelessWidget {
                   leading: Icon(Icons.pets),
                   title: Text('Υοθεσίες'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/next');
+                    Navigator.pushNamed(context, '/adoptions');
                   },
                 ),
                 ListTile(
@@ -43,14 +46,14 @@ class AppDrawer extends StatelessWidget {
                   leading: Icon(Icons.monetization_on),
                   title: Text('Δωρεές'),
                   onTap: () {
-                    // Handle navigation to the donations screen
+                    Navigator.pushNamed(context, '/donate');
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('Ποιοί είμαστε'),
                   onTap: () {
-                    // Handle navigation to the donations screen
+                    Navigator.pushNamed(context, '/about_us');
                   },
                 ),
                 ListTile(
@@ -75,6 +78,6 @@ class AppDrawer extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
