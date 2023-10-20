@@ -1,16 +1,5 @@
-# pet_match
+# Strays of Sparta
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This frontend is designed to appeal and catch the eye of an adoption candidate. 
+Vibrant colours, heart warming pictures and thoughtful text aim to warm up anyone who is considering saving a stray.
+Another selling point of this project is its comprehensive and intuitive architecture, making it easy for the end user to find what (or who) they are looking for.
