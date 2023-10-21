@@ -128,11 +128,12 @@ class TransportationScreen extends StatefulWidget {
 class _TransportationScreenState extends State<TransportationScreen> {
   TransportationData? selectedTransportation;
 
-  String formDataName = ''; // Declare variables for form data
-  String formDataPhone = '';
-  String formDataEmail = '';
-  String formDataAddress = '';
-  String formDataTK = '';
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
+  TextEditingController _tkController = TextEditingController();
 
   void handleSelection(bool isSelected, TransportationData data) {
     if (isSelected) {
@@ -148,91 +149,130 @@ class _TransportationScreenState extends State<TransportationScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Φόρμα'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextField(
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'Όνοματεπώνυμο',
+                      labelText: 'Ονοματεπώνυμο',
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.all(12.0),
                     ),
-                    onChanged: (value) {
-                      formDataName = value;
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Το ονοματεπώνυμό είναι απαραίτητο.';
+                      } else if (!RegExp(r'^.{1,50}$').hasMatch(value)) {
+                        return 'Το ονοματεπώνυμό δεν μπορεί να έχει τόσους χαρακτήρες.';
+                      }
+                      return null;
                     },
                   ),
-                ),
-                SizedBox(height: 16.0),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Τηλέφωνο',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(12.0),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Το email είναι απαραίτητο.';
+                      } else if (!RegExp(
+                              r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+                          .hasMatch(value)) {
+                        return 'Το email δεν είναι έγκυρο.';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (value) {
-                    formDataPhone = value;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                // Added some spacing
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(12.0),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      labelText: 'Τηλέφωνο',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Το τηλέφωνο είναι απαραίτητο.';
+                      } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                        return 'Το τελέφωνο δεν είναι έγκυρο.';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (value) {
-                    formDataEmail = value;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                // Added some spacing
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Διευθυνση',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(12.0),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: InputDecoration(
+                      labelText: 'Διέθυνση',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Εισάγετε μια διεύθυνση.';
+                      } else if (!RegExp(r'^.{1,50}$').hasMatch(value)) {
+                        return 'Η διεύθυνση δεν μπορεί να έχει τόσους χαρακτήρες.';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (value) {
-                    formDataAddress = value;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Τ.Κ.',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(12.0),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: _tkController,
+                    decoration: InputDecoration(
+                      labelText: 'Τ.Κ.',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.all(12.0),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ο Τ.Κ. είναι απαραίτητος.';
+                      } else if (!RegExp(r'^\d{5}$').hasMatch(value)) {
+                        return 'Ο Τ.Κ. δεν είναι έγκυρος.';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (value) {
-                    formDataTK = value;
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           actions: <Widget>[
             TextButton(
               child: Text('Καταχώρηση'),
               onPressed: () {
-                // Print the form data and selected transportation data
-                print('Form Data:');
-                print('Name: $formDataName');
-                print('Phone: $formDataPhone');
-                print('Email: $formDataEmail');
-                print('Address: $formDataAddress');
-                print('TK: $formDataTK');
-                print('Transportation ID: ${selectedTransportation?.id}');
-                print('Animal Name: ${selectedTransportation?.animalName}');
-                Navigator.of(context).pop();
+                if (_formKey.currentState!.validate()) {
+                  // Print the form data and selected transportation data
+                  print('Form Data:');
+                  print('Name: ${_nameController.text}');
+                  print('Phone: ${_phoneController.text}');
+                  print('Email: ${_emailController.text}');
+                  print('Address: ${_addressController.text}');
+                  print('TK: ${_tkController.text}');
+                  print('Transportation ID: ${selectedTransportation?.id}');
+                  print('Animal Name: ${selectedTransportation?.animalName}');
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
         );
       },
-    );
+    ).then((value) {
+      _formKey.currentState?.reset();
+      _nameController.clear();
+      _phoneController.clear();
+      _emailController.clear();
+      _addressController.clear();
+      _tkController.clear();
+    });
   }
 
   @override
@@ -246,17 +286,21 @@ class _TransportationScreenState extends State<TransportationScreen> {
           Expanded(
             child: ListView(
               children: transportationDataList.map((data) {
-                return TransportationListing(
-                  data: data,
-                  isSelected: selectedTransportation == data,
-                  onSelected: (isSelected) => handleSelection(isSelected, data),
+                return Container(
+                  margin: EdgeInsets.all(8.0),
+                  child: TransportationListing(
+                    data: data,
+                    isSelected: selectedTransportation == data,
+                    onSelected: (isSelected) =>
+                        handleSelection(isSelected, data),
+                  ),
                 );
               }).toList(),
             ),
           ),
           if (selectedTransportation != null)
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(15.0),
               child: ElevatedButton(
                 onPressed: handleSubmit,
                 child: Text('Επιλογή διαδρομής'),
