@@ -1,5 +1,5 @@
 class DogAd {
-  final String pictureUrl;
+  final List<String> pictureUrl;
   final String name;
   final String gender;
   final int age;

@@ -21,8 +21,24 @@ class TransportationData {
 List<TransportationData> transportationDataList = [
   TransportationData(
     id: 1,
-    startingCity: 'City A',
-    destination: 'City B',
+    startingCity: 'Q',
+    destination: 'M',
+    animalName: 'Fido',
+    species: 'Dog',
+    weight: '25 kg',
+  ),
+  TransportationData(
+    id: 2,
+    startingCity: 'Z',
+    destination: 'T',
+    animalName: 'Spot',
+    species: 'Dog',
+    weight: '20 kg',
+  ),
+   TransportationData(
+    id: 1,
+    startingCity: 'W',
+    destination: 'J',
     animalName: 'Fido',
     species: 'Dog',
     weight: '25 kg',
@@ -31,6 +47,38 @@ List<TransportationData> transportationDataList = [
     id: 2,
     startingCity: 'City C',
     destination: 'City D',
+    animalName: 'Spot',
+    species: 'Dog',
+    weight: '20 kg',
+  ),
+   TransportationData(
+    id: 1,
+    startingCity: 'A',
+    destination: 'B',
+    animalName: 'Fido',
+    species: 'Dog',
+    weight: '25 kg',
+  ),
+  TransportationData(
+    id: 2,
+    startingCity: 'C',
+    destination: 'D',
+    animalName: 'Spot',
+    species: 'Dog',
+    weight: '20 kg',
+  ),
+   TransportationData(
+    id: 1,
+    startingCity: 'E',
+    destination: 'F',
+    animalName: 'Fido',
+    species: 'Dog',
+    weight: '25 kg',
+  ),
+  TransportationData(
+    id: 2,
+    startingCity: 'G',
+    destination: 'H',
     animalName: 'Spot',
     species: 'Dog',
     weight: '20 kg',
@@ -135,6 +183,17 @@ class _TransportationScreenState extends State<TransportationScreen> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _tkController = TextEditingController();
 
+  int currentPage = 1;
+  int itemsPerPage = 4; // Adjust this to the number of items per page
+  int totalPages = 0;
+  List<TransportationData> displayedTransportationData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    updateDisplayedItems();
+  }
+
   void handleSelection(bool isSelected, TransportationData data) {
     if (isSelected) {
       setState(() {
@@ -143,7 +202,38 @@ class _TransportationScreenState extends State<TransportationScreen> {
     }
   }
 
-  void handleSubmit() {
+  void updateDisplayedItems() {
+    final startIndex = (currentPage - 1) * itemsPerPage;
+    final endIndex = startIndex + itemsPerPage;
+    totalPages = (transportationDataList.length / itemsPerPage).ceil();
+    setState(() {
+      if (endIndex > transportationDataList.length) {
+        displayedTransportationData = transportationDataList.sublist(startIndex);
+      } else {
+        displayedTransportationData = transportationDataList.sublist(startIndex, endIndex);
+      }
+    });
+  }
+
+  void handlePrevPage() {
+    if (currentPage > 1) {
+      setState(() {
+        currentPage--;
+        updateDisplayedItems();
+      });
+    }
+  }
+
+  void handleNextPage() {
+    if (currentPage < totalPages) {
+      setState(() {
+        currentPage++;
+        updateDisplayedItems();
+      });
+    }
+  }
+
+   void handleSubmit() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -285,18 +375,33 @@ class _TransportationScreenState extends State<TransportationScreen> {
         children: [
           Expanded(
             child: ListView(
-              children: transportationDataList.map((data) {
+              children: displayedTransportationData.map((data) {
                 return Container(
                   margin: EdgeInsets.all(8.0),
                   child: TransportationListing(
                     data: data,
                     isSelected: selectedTransportation == data,
-                    onSelected: (isSelected) =>
-                        handleSelection(isSelected, data),
+                    onSelected: (isSelected) => handleSelection(isSelected, data),
                   ),
                 );
               }).toList(),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: handlePrevPage,
+              ),
+              SizedBox(width: 16.0),
+              Text('Page $currentPage of $totalPages'),
+              SizedBox(width: 16.0),
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                onPressed: handleNextPage,
+              ),
+            ],
           ),
           if (selectedTransportation != null)
             Padding(

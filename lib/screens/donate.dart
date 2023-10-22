@@ -44,7 +44,7 @@ class Donate extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          Navigator.pushNamed(context, '/donate');
+                          Navigator.pushNamed(context, '/transport');
                         },
                     ),
                     TextSpan(
