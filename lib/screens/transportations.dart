@@ -348,7 +348,6 @@ class _TransportationScreenState extends State<TransportationScreen> {
 
   void submitData() async {
     if (_formKey.currentState!.validate() && selectedTransportation != null) {
-      // Form data
       Map<String, dynamic> formData = {
         'name_surname': _nameSurnameController.text,
         'email': _emailController.text,
@@ -358,7 +357,6 @@ class _TransportationScreenState extends State<TransportationScreen> {
         'itinerary_id': selectedTransportation!.id,
       };
 
-      // Transportation data
       Map<String, dynamic> transportationData = {
         'id': selectedTransportation!.id,
         'startingCity': selectedTransportation!.startingCity,
