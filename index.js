@@ -27,6 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({limit: '1mb'}));
 
 const Dog = sequelize.define('Dog', {
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -41,10 +46,6 @@ const Dog = sequelize.define('Dog', {
   },
   size: {
     type: DataTypes.STRING, // Update the data type according to your needs
-    allowNull: true
-  },
-  photo: {
-    type: DataTypes.BLOB,
     allowNull: true
   },
   vaccinated: {
@@ -72,6 +73,25 @@ const Dog = sequelize.define('Dog', {
     allowNull: true
   }
 });
+
+const DogsPhoto = sequelize.define('dogs_photos', {
+  dog_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: false, // Set to false since dog_id is not a primary key
+  },
+  dog_photo: {
+    type: DataTypes.BLOB,
+    allowNull: true,
+  },
+}, {
+  timestamps: false,
+  defaultScope: {
+    attributes: { exclude: ['id'] },
+  },
+});
+
+Dog.hasMany(DogsPhoto, { foreignKey: 'dog_id' });
 
 const TransportInterestModel = sequelize.define('transportation_forms', {
   name_surname: {
@@ -123,82 +143,112 @@ const TransportationModel = sequelize.define('transportations', {
   timestamps: false, // This will disable createdAt and updatedAt columns
 });
 
+const PetInterestModel = sequelize.define('interest_forms', {
+  name_surname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  post_code: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    allowNull: false,
+  },
+  foster: {
+    type: DataTypes.BOOLEAN, // Adjust the data type based on your database schema
+    allowNull: false,
+  },
+  duration: {
+    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    allowNull: true,
+  },
+  dog_id: {
+    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    allowNull: false,
+  },
+}, {
+  timestamps: false,
+  defaultScope: {
+    attributes: { exclude: ['id'] },
+  },
+});
 
-  // app.get('/dogs/:id', async (req, res) => {
-  //   const { id } = req.params;
-  //   try {
-  //     const dog = await Dog.findByPk(id);
-  //     if (!dog) {
-  //       return res.status(404).json({ message: 'Dog not found' });
-  //     }
-  //     // Base64 encode the blob data.
-  //     const base64Data = Buffer.from(dog.photo).toString('base64');
-  //     // Create a data URL for the image.
-  //     const imageUrl = `data:image/jpeg;base64,${base64Data}`;
-  //     // Remove the buffer and data properties from the original object.
-  //     delete dog.data;
-  //     delete dog.buffer;
-  //     // Create a new object with the image URL.
-      
-  //     const dogWithImage = { ...dog.toJSON(), photoUrl: imageUrl };
-  //     res.json(dogWithImage);
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ message: 'Internal Server Error' });
-  //   }
-  // });
-  
-  
-  
-  
-  
-
- //get a single dog 
- 
-
+Dog.hasMany(PetInterestModel, { foreignKey: 'dog_id' });
 
 // Endpoint for all Dogs
 app.get('/dogs', async (req, res) => {
-  try { const { size, sex, age, friendly_with_pets } = req.query;
+  try {
+    const { size, sex, age, friendly_with_pets } = req.query;
 
-  const whereClause = {};
-  if (size) whereClause.size = size;
-  if (sex) whereClause.sex = sex;
-  if (age) {
-    if (age === 'young') {
-      whereClause.age = { [Sequelize.Op.lte]: 2 };
+    const whereClause = {};
+    if (size) whereClause.size = size;
+    if (sex) whereClause.sex = sex;
+    if (age) {
+      if (age === 'young') {
+        whereClause.age = { [Sequelize.Op.lte]: 2 };
+      }
+      if (age === 'adult') {
+        whereClause.age = {
+          [Sequelize.Op.gt]: 2,
+          [Sequelize.Op.lte]: 8,
+        };
+      }
+      if (age === 'old') {
+        whereClause.age = { [Sequelize.Op.gt]: 8 };
+      }
     }
-    if (age === 'adult') {
-      whereClause.age = { 
-        [Sequelize.Op.gt]: 2,
-        [Sequelize.Op.lte]: 8   
-       };
-    }
-    if (age === 'old') {
-      whereClause.age = { [Sequelize.Op.gt]: 8 };
-    }
-    
-    // Add similar logic for other age options
-  }
-  if (friendly_with_pets) whereClause.friendly_with_pets = friendly_with_pets === 'true';
+    if (friendly_with_pets) whereClause.friendly_with_pets = friendly_with_pets === 'true';
 
-  // Use the where clause to query your database
-  const dogs = await Dog.findAll({
-    where: whereClause,
-  });
-    const dogsWithImages = dogs.map(dog => {
-      // Base64 encode the blob data.
-      //const base64Data = Buffer.from(dog.photo).toString('base64');
-      const { photo, ...dogData } = dog.toJSON();
-      //const imageUrl = `data:image/jpeg;base64,${base64Data}`;
-      // Create a new object with the image URL, sex, and size.
-      return {
-        ...dog.toJSON(),
-        //photoUrl: imageUrl,
-        sex: dog.sex,
-        size: dog.size
-      };
+    const dogs = await Dog.findAll({
+      attributes: ['id', 'name', 'age', 'sex', 'size', 'vaccinated', 'spayed', 'needs_contract', 'friendly_with_people', 'friendly_with_pets', 'health_state'],
+      where: whereClause,
     });
+    
+
+    const dogsWithImages = await Promise.all(dogs.map(async dog => {
+      const { id, name, age, sex, size, vaccinated, spayed, has_health_book, friendly_with_people, friendly_with_pets, health_state, region, needs_contract, email, phone, in_foster } = dog.toJSON();
+      const photos = await DogsPhoto.findAll({
+        where: { dog_id: id },
+      });
+
+      const photoDataArray = photos.map(photo => photo.dog_photo.toString());
+
+
+      // Decoding from base64
+const decodedBuffer = Buffer.from(photoDataArray, 'base64');
+console.log('Decoded Buffer:', decodedBuffer);
+
+      return {
+        id,
+        name,
+        age,
+        sex,
+        size,
+        vaccinated,
+        spayed,
+        has_health_book,
+        friendly_with_people,
+        friendly_with_pets,
+        health_state,
+        region,
+        needs_contract,
+        email,
+        phone,
+        in_foster,
+        photos: photoDataArray,
+      };
+    }));
+
     res.json(dogsWithImages);
   } catch (error) {
     console.error(error);
@@ -207,13 +257,14 @@ app.get('/dogs', async (req, res) => {
 });
 
 
+
 const nodemailer = require('nodemailer');
 
-// Create a Nodemailer transporter
+// transporter is used for mail service in both adoption form and transportation forms
 const transporter = nodemailer.createTransport({
   host: 'smtp-mail.outlook.com',
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: false, 
   auth: {
     user: 'petsparta@outlook.com.gr',
     pass: 'sept1409',
@@ -259,6 +310,61 @@ app.post('/transportInterest', async (req, res) => {
       <p><strong>Τηλέφωνο:</strong> ${req.body.formData.phone}</p>
       <p><strong>Email:</strong> ${req.body.formData.email}</p>
       <p><strong>Διεύθυνση:</strong> ${req.body.formData.address}</p>
+    `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({ message: 'Adoption request created successfully', request: newRequest });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+//post trans. form
+app.post('/petInterest', async (req, res) => {
+  try {
+
+    console.log(req.body)
+    
+    
+    console.log(req.body)
+    const { name_surname, phone, email, dog_id, post_code, address, foster, duration, name } = req.body;
+
+
+    // Insert data into the database
+    const newRequest = await PetInterestModel.create({
+      name_surname,
+      phone,
+      email,
+      dog_id,
+      post_code,
+      foster,
+      duration,
+      address,
+    });
+
+    const requestType = foster ? 'Υοθεσια' : 'Φιλοξενία';
+
+    //Send email with the same data
+    const mailOptions = {
+      from: 'petsparta@outlook.com.gr',
+      to: 'nomidimaria@yahoo.gr',
+      subject: 'Εκδήλωση ενδιαφέροντος για κατοικιδιο',
+      html: `
+      <h3>Στοιχεία φόρμας:</h3>
+      <p><strong>${requestType}</strong></p>
+    ${
+      foster
+        ? '' :  `<p><strong>Διάρκεια φιλοξενίας:</strong> ${req.body.duration}</p>`
+    }
+      <p><strong>Όνομα ζώου:</strong> ${req.body.name}</p>
+      <p><strong>Ονοματεπώνυμο:</strong> ${req.body.name_surname}</p>
+      <p><strong>Τηλέφωνο:</strong> ${req.body.phone}</p>
+      <p><strong>Email:</strong> ${req.body.email}</p>
+      <p><strong>Ταχυδρομικός κώδικας:</strong> ${req.body.post_code}</p>
+      <p><strong>Διεύθυνση:</strong> ${req.body.address}</p>
     `,
     };
 
