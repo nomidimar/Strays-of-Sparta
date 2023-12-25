@@ -69,7 +69,7 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
 
     // Send POST request
     final response = await http.post(
-      Uri.parse('http://localhost:3000/petInterest'),
+      Uri.parse('http://94.68.114.8:3000/petInterest'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },

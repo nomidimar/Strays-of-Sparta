@@ -163,7 +163,7 @@ class _TransportationScreenState extends State<TransportationScreen> {
 
   Future<List<TransportationData>> fetchData() async {
     final response =
-        await http.get(Uri.parse('http://localhost:3000/transportations'));
+        await http.get(Uri.parse('http://94.68.114.8:3000/transportations'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       print(response.body);
@@ -375,7 +375,7 @@ class _TransportationScreenState extends State<TransportationScreen> {
 
       // Send POST request
       final response = await http.post(
-        Uri.parse('http://localhost:3000/transportInterest'),
+        Uri.parse('http://94.68.114.8:3000/transportInterest'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },

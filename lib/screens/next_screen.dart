@@ -37,7 +37,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
     print('fetched data');
     try {
       // Build the base URL
-      String url = 'http://localhost:3000/dogs';
+      String url = 'http://94.68.114.8:3000/dogs';
 
       // Check if there are existing query parameters
       bool hasQueryParameters = false;
