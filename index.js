@@ -41,11 +41,11 @@ const Dog = sequelize.define('Dog', {
     allowNull: false
   },
   sex: {
-    type: DataTypes.TEXT, // Update the data type according to your needs
+    type: DataTypes.TEXT,
     allowNull: true
   },
   size: {
-    type: DataTypes.STRING, // Update the data type according to your needs
+    type: DataTypes.STRING,
     allowNull: true
   },
   vaccinated: {
@@ -71,14 +71,18 @@ const Dog = sequelize.define('Dog', {
   health_state: {
     type: DataTypes.STRING,
     allowNull: true
-  }
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 });
 
 const DogsPhoto = sequelize.define('dogs_photos', {
   dog_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: false, // Set to false since dog_id is not a primary key
+    primaryKey: false, 
   },
   dog_photo: {
     type: DataTypes.BLOB,
@@ -111,11 +115,11 @@ const TransportInterestModel = sequelize.define('transportation_forms', {
     allowNull: false,
   },
   itinerary_id: {
-    type: DataTypes.INTEGER, // Adjust the data type based on your database schema
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 }, {
-  timestamps: false, // This will disable createdAt and updatedAt columns
+  timestamps: false,
 });
 
 const TransportationModel = sequelize.define('transportations', {
@@ -136,11 +140,11 @@ const TransportationModel = sequelize.define('transportations', {
     allowNull: false,
   },
   pet_weight: {
-    type: DataTypes.INTEGER, // Adjust the data type based on your database schema
+    type: DataTypes.INTEGER, 
     allowNull: false,
   },
 }, {
-  timestamps: false, // This will disable createdAt and updatedAt columns
+  timestamps: false,
 });
 
 const PetInterestModel = sequelize.define('interest_forms', {
@@ -161,19 +165,19 @@ const PetInterestModel = sequelize.define('interest_forms', {
     allowNull: false,
   },
   address: {
-    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    type: DataTypes.STRING, 
     allowNull: false,
   },
   foster: {
-    type: DataTypes.BOOLEAN, // Adjust the data type based on your database schema
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   },
   duration: {
-    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    type: DataTypes.STRING, 
     allowNull: true,
   },
   dog_id: {
-    type: DataTypes.STRING, // Adjust the data type based on your database schema
+    type: DataTypes.STRING, 
     allowNull: false,
   },
 }, {
@@ -210,13 +214,13 @@ app.get('/dogs', async (req, res) => {
     if (friendly_with_pets) whereClause.friendly_with_pets = friendly_with_pets === 'true';
 
     const dogs = await Dog.findAll({
-      attributes: ['id', 'name', 'age', 'sex', 'size', 'vaccinated', 'spayed', 'needs_contract', 'friendly_with_people', 'friendly_with_pets', 'health_state'],
+      attributes: ['id', 'name', 'age', 'sex', 'size', 'vaccinated', 'spayed', 'needs_contract', 'friendly_with_people', 'friendly_with_pets', 'health_state', 'description'],
       where: whereClause,
     });
     
 
     const dogsWithImages = await Promise.all(dogs.map(async dog => {
-      const { id, name, age, sex, size, vaccinated, spayed, has_health_book, friendly_with_people, friendly_with_pets, health_state, region, needs_contract, email, phone, in_foster } = dog.toJSON();
+      const { id, name, age, sex, size, vaccinated, spayed, has_health_book, friendly_with_people, friendly_with_pets, health_state, region, needs_contract, email, phone, in_foster, description } = dog.toJSON();
       const photos = await DogsPhoto.findAll({
         where: { dog_id: id },
       });
@@ -245,6 +249,7 @@ console.log('Decoded Buffer:', decodedBuffer);
         email,
         phone,
         in_foster,
+        description,
         photos: photoDataArray,
       };
     }));
@@ -398,7 +403,7 @@ app.post('/dogs', async (req, res) => {
       return res.status(400).json({ message: 'Unable to upload photo', error: err });
     }
     try {
-      const { name, age, description, vaccinated, spayed, has_chip, friendly_with_people, friendly_with_pets, health_state } = req.body;
+      const { name, age, description, vaccinated, spayed, has_chip, friendly_with_people, friendly_with_pets, health_state,  } = req.body;
       const photoBuffer = Buffer.from(req.body.photo, 'base64');
       const newDog = await Dog.create({
         name,
