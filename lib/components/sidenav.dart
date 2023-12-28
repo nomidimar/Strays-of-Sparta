@@ -5,8 +5,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
         child: Container(
-      color: Color.fromARGB(
-          255, 247, 246, 246), // Set the background color to gray
+      color: Color.fromARGB(255, 247, 246, 246),
       child: Column(
         children: [
           Expanded(

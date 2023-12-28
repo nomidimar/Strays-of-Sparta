@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class DogAd {
   int id;
   List<String> photos;
@@ -11,6 +13,7 @@ class DogAd {
   String healthState;
   String age;
   String size;
+  String description;
 
   DogAd({
     required this.id,
@@ -25,26 +28,23 @@ class DogAd {
     required this.healthState,
     required this.age,
     required this.size,
+    required this.description,
   });
 
-  // Constructor to convert JSON data to a DogAd instance
   factory DogAd.fromJson(Map<String, dynamic> json) {
     return DogAd(
       id: json['id'],
       name: json['name'],
       age: json['age'],
-      sex: json['sex'] ?? '', // Use an empty string as a default value
-      size: json['size'] ?? '', // Use an empty string as a default value
-      vaccinated: json['vaccinated'] ?? false, // Use false as a default value
-      spayed: json['spayed'] ?? false, // Use false as a default value
-      friendlyWithPeople:
-          json['friendly_with_people'] ?? false, // Use false as a default value
-      friendlyWithPets:
-          json['friendly_with_pets'] ?? false, // Use false as a default value
-      healthState:
-          json['health_state'] ?? '', // Use an empty string as a default value
-      needsContract:
-          json['needs_contract'] ?? false, // Use false as a default value
+      sex: json['sex'] ?? '',
+      size: json['size'] ?? '',
+      description: json['description'] ?? '',
+      vaccinated: json['vaccinated'] ?? false,
+      spayed: json['spayed'] ?? false,
+      friendlyWithPeople: json['friendly_with_people'] ?? false,
+      friendlyWithPets: json['friendly_with_pets'] ?? false,
+      healthState: json['health_state'] ?? '',
+      needsContract: json['needs_contract'] ?? false,
       photos: List<String>.from(json['photos'] ?? []),
     );
   }

@@ -19,7 +19,6 @@ class TransportationData {
     required this.weight,
   });
 
-  // Factory method to create a TransportationData from JSON
   factory TransportationData.fromJson(Map<String, dynamic> json) {
     return TransportationData(
       id: json['id'],
@@ -166,7 +165,6 @@ class _TransportationScreenState extends State<TransportationScreen> {
         await http.get(Uri.parse('http://94.68.114.8:3000/transportations'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print(response.body);
       return data.map((item) => TransportationData.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load transportation data');
@@ -213,7 +211,6 @@ class _TransportationScreenState extends State<TransportationScreen> {
   }
 
   void handleSubmit() {
-    print('Displaying the button');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -319,15 +316,6 @@ class _TransportationScreenState extends State<TransportationScreen> {
               child: Text('Καταχώρηση'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // Print the form data and selected transportation data
-                  print('Form Data:');
-                  print('Name: ${_nameSurnameController.text}');
-                  print('Phone: ${_phoneController.text}');
-                  print('Email: ${_emailController.text}');
-                  print('Address: ${_addressController.text}');
-                  print('TK: ${_tkController.text}');
-                  print('Transportation ID: ${selectedTransportation?.id}');
-                  print('Animal Name: ${selectedTransportation?.animalName}');
                   Navigator.of(context).pop();
                   submitData();
                 } else {}
@@ -364,10 +352,8 @@ class _TransportationScreenState extends State<TransportationScreen> {
         'animalName': selectedTransportation!.animalName,
         'species': selectedTransportation!.species,
         'weight': selectedTransportation!.weight,
-        // Add other transportation data fields as needed
       };
 
-      // Combine form data and transportation data
       Map<String, dynamic> postData = {
         'formData': formData,
         'transportationData': transportationData,
@@ -383,15 +369,12 @@ class _TransportationScreenState extends State<TransportationScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Successful response, handle accordingly
         print('Successfully submitted data to the backend.');
       } else {
-        // Handle errors
         print(
             'Failed to submit data to the backend. Status code: ${response.statusCode}');
       }
 
-      // Close the dialog
       Navigator.of(context).pop();
     }
   }

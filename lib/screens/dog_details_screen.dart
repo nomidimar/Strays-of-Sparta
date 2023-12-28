@@ -10,6 +10,7 @@ class DogDetailsScreen extends StatefulWidget {
   final String age;
   final String size;
   final int id;
+  final String description;
 
   DogDetailsScreen(
       {required this.photoDataArray,
@@ -17,7 +18,8 @@ class DogDetailsScreen extends StatefulWidget {
       required this.sex,
       required this.age,
       required this.size,
-      required this.id});
+      required this.id,
+      required this.description});
 
   @override
   _DogDetailsScreenState createState() => _DogDetailsScreenState();
@@ -27,9 +29,9 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
   bool isInterested = false;
   bool adoptionOrFoster = false;
   String? selectedDuration;
+  bool isLoading = false;
 
   String removeDataUrlPrefix(String base64Image) {
-    print(base64Image);
     const String prefix1 = "data:image/jpeg;base64,";
     const String prefix2 = "data:image/png;base64,";
 
@@ -38,8 +40,6 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
     } else if (base64Image.startsWith(prefix2)) {
       return base64Image.substring(prefix2.length);
     }
-
-    // If no prefix is found, return the original string
     return base64Image;
   }
 
@@ -61,11 +61,9 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
       'foster': adoptionOrFoster,
       'duration': selectedDuration
     };
-
-    // // Combine form data and transportation data
-    // Map<String, dynamic> postData = {
-    //   'formData': formData,
-    // };
+    setState(() {
+      isLoading = true;
+    });
 
     // Send POST request
     final response = await http.post(
@@ -77,15 +75,15 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
     );
 
     if (response.statusCode == 201) {
-      // Successful response, handle accordingly
       print('Successfully submitted data to the backend.');
     } else {
-      // Handle errors
       print(
           'Failed to submit data to the backend. Status code: ${response.statusCode}');
     }
 
-    // Close the dialog
+    setState(() {
+      isLoading = false;
+    });
     Navigator.of(context).pop();
   }
 
@@ -187,15 +185,12 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
                                     selectedDuration = null;
                                   }
                                 });
-                                print(adoptionOrFoster);
                               },
                             ),
                             Text('Υιοθεσία'),
                           ],
                         ),
                         SizedBox(height: 16.0),
-                        // Conditional Duration Dropdown
-                        // Only visible if user selects "Foster"
                         if (!adoptionOrFoster)
                           Container(
                             constraints: BoxConstraints(maxWidth: 200.0),
@@ -262,7 +257,6 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
     );
   }
 
-  //open pop up dialog when the user is interested in pet
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -322,14 +316,22 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lobortis rhoncus dolor, vitae viverra purus congue eu. Nulla facilisi.',
-                    style: TextStyle(fontSize: 14),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Container(
+                        child: Text(
+                          widget.description,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
+
           //Dog data
           Container(
             width: 100,

@@ -18,14 +18,12 @@ class _AdoptionsListState extends State<AdoptionsList> {
   String? selectedSize;
   bool isFriendly = false;
   String? selectedAge;
-  //filter variables
 
   bool dataFetched = false;
 
   int currentPage = 1;
-  int itemsPerPage = 5; // Change this to your desired number of items per page
+  int itemsPerPage = 6;
   List<DogAd> displayedDogAds = [];
-  //Pagination variables
 
   @override
   void initState() {
@@ -39,10 +37,8 @@ class _AdoptionsListState extends State<AdoptionsList> {
       // Build the base URL
       String url = 'http://94.68.114.8:3000/dogs';
 
-      // Check if there are existing query parameters
       bool hasQueryParameters = false;
 
-      // Add filters to the URL if they are selected
       if (selectedSize != null) {
         url += '?size=$selectedSize';
         hasQueryParameters = true;
@@ -72,15 +68,11 @@ class _AdoptionsListState extends State<AdoptionsList> {
         final List<dynamic> responseData = json.decode(response.body);
         List<DogAd> fetchedDogAds =
             responseData.map((data) => DogAd.fromJson(data)).toList();
-        // if (fetchedDogAds.isNotEmpty) {
         setState(() {
           dogAds = fetchedDogAds;
           dataFetched = true;
-          updateDisplayedItems(); // Ensure updateDisplayedItems() is called here
+          updateDisplayedItems();
         });
-        // } else {
-        //   print('Fetched data is empty');
-        // }
       } else {
         throw Exception('Failed to fetch data');
       }
@@ -91,13 +83,9 @@ class _AdoptionsListState extends State<AdoptionsList> {
   }
 
   void handleFilterSubmit() {
-    print("called fetch data");
-    // if (!dataFetched) {
     fetchData();
-    //}
     updateDisplayedItems();
-    currentPage = 1; // Reset to the first page after applying filters
-    //Navigator.of(context).pop();
+    currentPage = 1;
   }
 
   void updateDisplayedItems() {
@@ -106,7 +94,6 @@ class _AdoptionsListState extends State<AdoptionsList> {
     print(
         'startIndex: $startIndex, endIndex: $endIndex, dogAds.length: ${dogAds.length}');
     setState(() {
-      // Ensure endIndex is within the valid range of the list
       if (endIndex > dogAds.length) {
         displayedDogAds = dogAds.sublist(startIndex);
       } else {
@@ -119,13 +106,10 @@ class _AdoptionsListState extends State<AdoptionsList> {
 
   Widget _buildImageFromBlob(String blob) {
     try {
-      // Remove data URI prefix if present
       if (blob.startsWith('data:image')) {
         blob = blob.split(',')[1];
-        print('Blob rendered');
       }
 
-      // Decode Base64 string to Uint8List
       Uint8List bytes = base64.decode(blob);
 
       return Image.memory(
@@ -137,7 +121,6 @@ class _AdoptionsListState extends State<AdoptionsList> {
     } catch (e, stackTrace) {
       print('Error decoding image: $e');
       print('StackTrace: $stackTrace');
-      // Handle the error (e.g., show a placeholder image)
       return _buildErrorImage('Error decoding image.');
     }
   }
@@ -178,6 +161,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
                         sex: dogAd.sex ?? "Unknown Gender",
                         age: dogAd.age ?? "Unknown Age",
                         size: dogAd.size ?? "Unknown Size",
+                        description: dogAd.description ?? "Unknown Size",
                         id: (dogAd.id ?? 0) as int,
                       ),
                     ),
@@ -275,8 +259,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
                                     key: Key('sexFilter'),
                                     title: Icon(
                                       Icons.male,
-                                      color:
-                                          Colors.blue, // Change color as needed
+                                      color: Colors.blue,
                                     ),
                                     value: 'Αρσενικό',
                                     groupValue: selectedSex,
@@ -292,8 +275,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
                                     key: Key('sexFilter'),
                                     title: Icon(
                                       Icons.female,
-                                      color:
-                                          Colors.pink, // Change color as needed
+                                      color: Colors.pink,
                                     ),
                                     value: 'Θηλυκό',
                                     groupValue: selectedSex,
@@ -306,10 +288,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
                                 ),
                               ],
                             ),
-
                             SizedBox(height: 16.0),
-
-                            // Size Radio Buttons
                             Text('Μέγεθος:'),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -365,7 +344,6 @@ class _AdoptionsListState extends State<AdoptionsList> {
                             ),
                             SizedBox(height: 16.0),
                             Text('Ηλικία:'),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -397,7 +375,6 @@ class _AdoptionsListState extends State<AdoptionsList> {
                                 ),
                               ],
                             ),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [

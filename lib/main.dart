@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My App',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey, // Change the primary color
+        primarySwatch: Colors.blueGrey,
       ),
-      initialRoute: '/', // Define the initial route, usually '/'
+      initialRoute: '/',
       routes: {
-        '/': (context) => WelcomeScreen(), // Define a route named '/'
+        '/': (context) => WelcomeScreen(),
         '/about_us': (context) => AboutUsScreen(),
         '/adoptions': (context) => AdoptionsList(),
         '/donate': (context) => Donate(),
