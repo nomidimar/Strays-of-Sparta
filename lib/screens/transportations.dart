@@ -107,7 +107,7 @@ class _TransportationListingState extends State<TransportationListing> {
                       SizedBox(height: 8.0),
                       Text(widget.data.species),
                       SizedBox(height: 8.0),
-                      Text(widget.data.weight),
+                      Text(widget.data.weight + ' κιλά'),
                     ],
                   ),
                 ],
@@ -368,9 +368,7 @@ class _TransportationScreenState extends State<TransportationScreen> {
         body: jsonEncode(postData),
       );
 
-      if (response.statusCode == 200) {
-        print('Successfully submitted data to the backend.');
-      } else {
+      if (!(response.statusCode == 201)) {
         print(
             'Failed to submit data to the backend. Status code: ${response.statusCode}');
       }

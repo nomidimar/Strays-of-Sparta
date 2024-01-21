@@ -61,9 +61,8 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
       'foster': adoptionOrFoster,
       'duration': selectedDuration
     };
-    setState(() {
-      isLoading = true;
-    });
+
+    Navigator.of(context).pop();
 
     // Send POST request
     final response = await http.post(
@@ -74,17 +73,10 @@ class _DogDetailsScreenState extends State<DogDetailsScreen> {
       body: jsonEncode(formData),
     );
 
-    if (response.statusCode == 201) {
-      print('Successfully submitted data to the backend.');
-    } else {
+    if (!(response.statusCode == 201)) {
       print(
           'Failed to submit data to the backend. Status code: ${response.statusCode}');
     }
-
-    setState(() {
-      isLoading = false;
-    });
-    Navigator.of(context).pop();
   }
 
   void showInterestDialog(BuildContext context) {
