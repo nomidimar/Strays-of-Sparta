@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-//const adoptionRoutes = require('./routes/TransportInterest');
 const { Sequelize, DataTypes } = require('sequelize');
 
+//Initialize db credentials
 const sequelize = new Sequelize('strays_of_sparta', 'user', 'root', {
   host: 'localhost',
   dialect: 'mysql'
@@ -143,6 +143,10 @@ const TransportationModel = sequelize.define('transportations', {
     type: DataTypes.INTEGER, 
     allowNull: false,
   },
+  has_carrier: {
+    type:DataTypes.BOOLEAN,
+    allowNull:true,
+  }
 }, {
   timestamps: false,
 });
@@ -189,7 +193,7 @@ const PetInterestModel = sequelize.define('interest_forms', {
 
 Dog.hasMany(PetInterestModel, { foreignKey: 'dog_id' });
 
-// Endpoint for all Dogs
+// Endpoint for fetching all Dogs
 app.get('/dogs', async (req, res) => {
   try {
     const { size, sex, age, friendly_with_pets } = req.query;
@@ -230,7 +234,6 @@ app.get('/dogs', async (req, res) => {
 
       // Decoding from base64
 const decodedBuffer = Buffer.from(photoDataArray, 'base64');
-console.log('Decoded Buffer:', decodedBuffer);
 
       return {
         id,
@@ -327,7 +330,7 @@ app.post('/transportInterest', async (req, res) => {
   }
 });
 
-//post trans. form
+//Post interest form
 app.post('/petInterest', async (req, res) => {
   try {
 
@@ -337,8 +340,6 @@ app.post('/petInterest', async (req, res) => {
     console.log(req.body)
     const { name_surname, phone, email, dog_id, post_code, address, foster, duration, name } = req.body;
 
-
-    // Insert data into the database
     const newRequest = await PetInterestModel.create({
       name_surname,
       phone,
@@ -349,10 +350,8 @@ app.post('/petInterest', async (req, res) => {
       duration,
       address,
     });
-
     const requestType = foster ? 'Υοθεσια' : 'Φιλοξενία';
 
-    //Send email with the same data
     const mailOptions = {
       from: 'petsparta@outlook.com.gr',
       to: 'nomidimaria@yahoo.gr',
@@ -383,12 +382,10 @@ app.post('/petInterest', async (req, res) => {
 });
 
 
-
-// Configure multer to handle file uploads
 const multer = require('multer');
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1024 * 1024 * 5 } // limit file size to 5 MB
+  limits: { fileSize: 1024 * 1024 * 5 } 
 }).single('photo');
 const fs = require('fs');
 
@@ -396,6 +393,7 @@ const fs = require('fs');
 
 app.use(express.json());
 
+//optional endpoint for dog entry creation
 app.post('/dogs', async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
@@ -426,13 +424,12 @@ app.post('/dogs', async (req, res) => {
 });
 
 
-  
+ //Endpoint for fetching available transportations 
 app.get('/transportations', async (req, res) => {
   try {
-    // Extract values from query parameters
+  
     const { from_city, to_city, pet_name, pet_species, pet_weight } = req.query;
 
-    // Build the where clause based on provided parameters
     const whereClause = {};
     if (from_city) whereClause.from_city = from_city;
     if (to_city) whereClause.to_city = to_city;
@@ -440,12 +437,10 @@ app.get('/transportations', async (req, res) => {
     if (pet_species) whereClause.pet_species = pet_species;
     if (pet_weight) whereClause.pet_weight = pet_weight;
 
-    // Use the where clause to query your database
     const transportRequests = await TransportationModel.findAll({
       where: whereClause,
     });
 
-    // Return the results
     res.json(transportRequests);
   } catch (error) {
     console.error(error);
