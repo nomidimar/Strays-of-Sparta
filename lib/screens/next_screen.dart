@@ -141,7 +141,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
-        title: Text('Υοθεσίες'),
+        title: Text('Υιοθεσίες'),
       ),
       body: Column(
         children: [
@@ -216,6 +216,7 @@ class _AdoptionsListState extends State<AdoptionsList> {
                     });
                   }
                 },
+                color: currentPage > 1 ? Colors.black : Colors.grey,
               ),
               SizedBox(width: 16.0),
               Text('Page $currentPage'),
@@ -230,6 +231,9 @@ class _AdoptionsListState extends State<AdoptionsList> {
                     });
                   }
                 },
+                color: currentPage < (dogAds.length / itemsPerPage).ceil()
+                    ? Colors.black
+                    : Colors.grey,
               )
             ],
           ),
@@ -245,178 +249,200 @@ class _AdoptionsListState extends State<AdoptionsList> {
                   return AlertDialog(
                     title: Text('Φίλτρα'),
                     content: Container(
-                        height: 400,
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Φύλο:'),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    key: Key('sexFilter'),
-                                    title: Icon(
-                                      Icons.male,
-                                      color: Colors.blue,
-                                    ),
-                                    value: 'Αρσενικό',
-                                    groupValue: selectedSex,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedSex = value;
-                                      });
-                                    },
+                      width: 400,
+                      height: 400,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: 400,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Φύλο:'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          key: Key('sexFilter'),
+                                          title: Icon(
+                                            Icons.male,
+                                            color: Colors.blue,
+                                          ),
+                                          value: 'Αρσενικό',
+                                          groupValue: selectedSex,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedSex = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          key: Key('sexFilter'),
+                                          title: Icon(
+                                            Icons.female,
+                                            color: Colors.pink,
+                                          ),
+                                          value: 'Θηλυκό',
+                                          groupValue: selectedSex,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedSex = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    key: Key('sexFilter'),
-                                    title: Icon(
-                                      Icons.female,
-                                      color: Colors.pink,
-                                    ),
-                                    value: 'Θηλυκό',
-                                    groupValue: selectedSex,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedSex = value;
-                                      });
-                                    },
+                                  SizedBox(height: 16.0),
+                                  Text('Μέγεθος:'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text(
+                                            '<12kg',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          value: 'Μικρό',
+                                          groupValue: selectedSize,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedSize = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text('<20kg'),
+                                          value: 'Μεσαίο',
+                                          groupValue: selectedSize,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedSize = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text(
+                                            '>20kg',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          value: 'Μεγάλο',
+                                          groupValue: selectedSize,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedSize = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16.0),
+                                  Text('Ηλικία:'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text('Νέο'),
+                                          value: 'young',
+                                          groupValue: selectedAge,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedAge = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text(
+                                            'Ενήλικο',
+                                          ),
+                                          value: 'adult',
+                                          groupValue: selectedAge,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedAge = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: Text('Μεγάλο'),
+                                          value: 'old',
+                                          groupValue: selectedAge,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedAge = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16.0),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: isFriendly,
+                                        onChanged: (newValue) {
+                                          if (newValue != null) {
+                                            setState(() {
+                                              isFriendly = newValue;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                      Text('Φιλικό με σκύλους'),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 16.0),
-                            Text('Μέγεθος:'),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text(
-                                      '<12kg',
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    value: 'Μικρό',
-                                    groupValue: selectedSize,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedSize = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text('<20kg'),
-                                    value: 'Μεσαίο',
-                                    groupValue: selectedSize,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedSize = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text(
-                                      '>20kg',
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    value: 'Μεγάλο',
-                                    groupValue: selectedSize,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedSize = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16.0),
-                            Text('Ηλικία:'),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text('Νέο'),
-                                    value: 'young',
-                                    groupValue: selectedAge,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedAge = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text(
-                                      'Ενήλικο',
-                                    ),
-                                    value: 'adult',
-                                    groupValue: selectedAge,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedAge = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RadioListTile<String>(
-                                    title: Text('Μεγάλο'),
-                                    value: 'old',
-                                    groupValue: selectedAge,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedAge = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 16.0),
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: isFriendly,
-                                  onChanged: (newValue) {
-                                    if (newValue != null) {
-                                      setState(() {
-                                        isFriendly = newValue;
-                                      });
-                                    }
-                                  },
-                                ),
-                                Text('Φιλικό με σκύλους'),
-                              ],
-                            ),
-                          ],
-                        )),
+                          );
+                        },
+                      ),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () {
                           handleFilterSubmit();
                           Navigator.of(context).pop();
                         },
-                        child: Text('Submit'),
+                        child: Text('Υποβολή'),
                       ),
                     ],
                   );
@@ -425,7 +451,13 @@ class _AdoptionsListState extends State<AdoptionsList> {
             },
           );
         },
-        child: Icon(Icons.filter_list),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.tune),
+            Text('Φίλτρα'),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

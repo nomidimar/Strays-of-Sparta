@@ -1,8 +1,7 @@
 import 'package:http/http.dart' as http;
 
 class APIService {
-  static const String baseUrl =
-      'http://94.68.114.8:3000/'; // Replace with your backend URL
+  static const String baseUrl = 'http://94.68.114.8:3000/';
 
   Future<String> fetchData() async {
     final response = await http.get(Uri.parse('$baseUrl/'));

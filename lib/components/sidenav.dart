@@ -29,7 +29,7 @@ class AppDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.pets),
-                  title: Text('Υοθεσίες'),
+                  title: Text('Υιοθεσίες'),
                   onTap: () {
                     Navigator.pushNamed(context, '/adoptions');
                   },

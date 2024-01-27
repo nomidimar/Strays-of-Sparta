@@ -9,6 +9,7 @@ class TransportationData {
   final String animalName;
   final String species;
   final String weight;
+  final bool has_carrier;
 
   TransportationData({
     required this.id,
@@ -17,6 +18,7 @@ class TransportationData {
     required this.animalName,
     required this.species,
     required this.weight,
+    required this.has_carrier,
   });
 
   factory TransportationData.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class TransportationData {
       animalName: json['pet_name'],
       species: json['pet_species'],
       weight: json['pet_weight'].toString(),
+      has_carrier: json['has_carrier'],
     );
   }
 }
@@ -110,6 +113,16 @@ class _TransportationListingState extends State<TransportationListing> {
                       Text(widget.data.weight + ' κιλά'),
                     ],
                   ),
+                  if (widget.data.has_carrier)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          child: Icon(Icons.card_travel, color: Colors.green),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -165,6 +178,8 @@ class _TransportationScreenState extends State<TransportationScreen> {
         await http.get(Uri.parse('http://94.68.114.8:3000/transportations'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      print("goated");
+      print(data);
       return data.map((item) => TransportationData.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load transportation data');
@@ -208,6 +223,32 @@ class _TransportationScreenState extends State<TransportationScreen> {
         updateDisplayedItems();
       });
     }
+  }
+
+  void showInfoPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Πληροφορίες'),
+          content: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                    text: 'Σε δρομολόγια  που έχουν το σήμα ',
+                    style: TextStyle(fontSize: 20)),
+                WidgetSpan(
+                  child: Icon(Icons.card_travel, color: Colors.green),
+                ),
+                TextSpan(
+                    text: ' διατίθεται τσάντα μεταφοράς / crate!',
+                    style: TextStyle(fontSize: 20)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void handleSubmit() {
@@ -383,47 +424,70 @@ class _TransportationScreenState extends State<TransportationScreen> {
       appBar: AppBar(
         title: Text('Δρομολόγια'),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: displayedTransportationData.length,
-              itemBuilder: (context, index) {
-                final data = displayedTransportationData[index];
-                return Container(
-                    margin: EdgeInsets.all(8.0),
-                    child: TransportationListing(
-                      data: data,
-                      isSelected: selectedTransportation == data,
-                      onSelected: () => handleSelection(data),
-                    ));
-              },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: handlePrevPage,
+              Expanded(
+                child: ListView.builder(
+                  itemCount: displayedTransportationData.length,
+                  itemBuilder: (context, index) {
+                    final data = displayedTransportationData[index];
+                    return Container(
+                      margin: EdgeInsets.all(8.0),
+                      child: TransportationListing(
+                        data: data,
+                        isSelected: selectedTransportation == data,
+                        onSelected: () => handleSelection(data),
+                      ),
+                    );
+                  },
+                ),
               ),
-              SizedBox(width: 16.0),
-              Text('Page $currentPage of $totalPages'),
-              SizedBox(width: 16.0),
-              IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: handleNextPage,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: handlePrevPage,
+                    color: currentPage > 1 ? Colors.black : Colors.grey,
+                  ),
+                  SizedBox(width: 16.0),
+                  Text('Page $currentPage'),
+                  SizedBox(width: 16.0),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward),
+                    onPressed: handleNextPage,
+                    color:
+                        currentPage < totalPages ? Colors.black : Colors.grey,
+                  ),
+                  SizedBox(width: 16.0),
+                  // Remove the IconButton from here
+                ],
               ),
+              if (selectedTransportation != null)
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: ElevatedButton(
+                    onPressed: handleSubmit,
+                    child: Text('Επιλογή διαδρομής'),
+                  ),
+                ),
             ],
           ),
-          if (selectedTransportation != null)
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: ElevatedButton(
-                onPressed: handleSubmit,
-                child: Text('Επιλογή διαδρομής'),
+          // Info icon aligned at the same height as the Row
+          Positioned(
+            bottom: 5.0,
+            left: 20.0,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: IconButton(
+                icon: Icon(Icons.info_outline_rounded,
+                    size: 30.0, color: Colors.blue),
+                onPressed: showInfoPopup,
               ),
             ),
+          ),
         ],
       ),
     );
