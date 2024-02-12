@@ -6,6 +6,9 @@ import '../components/sidenav.dart';
 class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+  double screenWidth = MediaQuery.of(context)?.size?.width ?? 400;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(''),
@@ -34,7 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                           text: 'ΠΟΛΙΤΙΣΤΙΚΟΣ ΦΙΛΟΖΩΙΚΟΣ ΣΥΛΛΟΓΟΣ ΣΠΑΡΤΗΣ\n\n',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.width * 0.06,
+                            fontSize: screenWidth * 0.06,
                           ),
                         ),
                         TextSpan(
@@ -48,7 +51,7 @@ class WelcomeScreen extends StatelessWidget {
                           text:
                               'Μη κερδοσκοπικός οργανισμός με σκοπό την διαφύλαξη των δικαιωμάτων των ζώων, την ΕΥΖΩΙΑ τους, την περίθαλψη τους και την προώθηση υιοθεσιων αδέσποτων ζώων.',
                           style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontSize: screenWidth * 0.05,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
